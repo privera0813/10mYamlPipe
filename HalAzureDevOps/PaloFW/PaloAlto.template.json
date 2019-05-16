@@ -1,0 +1,821 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "functionCode": {
+            "type": "string",
+            "defaultValue": "INT",
+            "metadata": {
+            "description": "HAL IT Function Code - Example: INT or EXT"
+            }
+            },
+            "environmentCode": {
+            "type": "string",
+            "defaultValue": "DEV",
+            "metadata": {
+            "description": "HAL IT Environment Code - Example: DEV, PRD"
+            }
+            },
+            "productLineCode": {
+            "type": "string",
+            "defaultValue": "IT",
+            "metadata": {
+            "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+            }
+            },
+            "customerCode": {
+            "type": "string",
+            "defaultValue": "HAL",
+            "metadata": {
+            "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+            }
+            },
+            "typeCode": {
+            "type": "string",
+            "defaultValue": "SV",
+            "metadata": {
+            "description": "HAL IT Type - Example: WL or SV"
+            }
+            },
+            "locationCode": {
+            "type": "string",
+            "defaultValue": "southcentralus",
+            "metadata": {
+            "description": "Azure Location/Region - Example: southcentalus" }
+        },  
+        "routeTables_mgmtroutetable_name": {
+            "defaultValue": "mgmtroutetable",
+            "type": "String"
+        },
+        "routeTables_trustroutetable_name": {
+            "defaultValue": "trustroutetable",
+            "type": "String"
+        },
+        "publicIPAddresses_halpaloalto_name": {
+            "defaultValue": "halpaloalto",
+            "type": "String"
+        },
+        "routeTables_untrustroutetable_name": {
+            "defaultValue": "untrustroutetable",
+            "type": "String"
+        },
+        "virtualMachines_azpaloalto001v_name": {
+            "defaultValue": "azpaloalto001v",
+            "type": "String"
+        },
+        "networkSecurityGroups_DefaultNSG_name": {
+            "defaultValue": "DefaultNSG",
+            "type": "String"
+        },
+        "storageAccounts_azpaloaltofwstorage_name": {
+            "defaultValue": "azpaloaltofwstorage",
+            "type": "String"
+        },
+        "routes_Internet_name": {
+            "defaultValue": "Internet",
+            "type": "String"
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth0_name": {
+            "defaultValue": "azpaloalto001v-halpaloalto-eth0",
+            "type": "String"
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth1_name": {
+            "defaultValue": "azpaloalto001v-halpaloalto-eth1",
+            "type": "String"
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth2_name": {
+            "defaultValue": "azpaloalto001v-halpaloalto-eth2",
+            "type": "String"
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth03_name": {
+            "defaultValue": "azpaloalto001v-halpaloalto-eth03",
+            "type": "String"
+        },
+        "securityRules_Allow_Intra_name": {
+            "defaultValue": "Allow-Intra",
+            "type": "String"
+        },
+        "securityRules_Default_Deny_name": {
+            "defaultValue": "Default-Deny",
+            "type": "String"
+        },
+        "securityRules_Allow_Outside_From_IP_name": {
+            "defaultValue": "Allow-Outside-From-IP",
+            "type": "String"
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth0_id": {
+            "defaultValue": "/subscriptions/13477ac5-1b1f-4a93-aa54-cc3a0bf5aeca/resourceGroups/network-iaworkload_australia_east/providers/Microsoft.Network/virtualNetworks/network-iaworkload_australia_east-vnet1/subnets/fw_mgmt",
+            "type": "String"
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth03_id": {
+            "defaultValue": "/subscriptions/13477ac5-1b1f-4a93-aa54-cc3a0bf5aeca/resourceGroups/network-iaworkload_australia_east/providers/Microsoft.Network/virtualNetworks/network-iaworkload_australia_east-vnet1/subnets/default",
+            "type": "String"
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth1_id": {
+            "defaultValue": "/subscriptions/13477ac5-1b1f-4a93-aa54-cc3a0bf5aeca/resourceGroups/network-iaworkload_australia_east/providers/Microsoft.Network/virtualNetworks/network-iaworkload_australia_east-vnet1/subnets/enclave_ia",
+            "type": "String"
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth2_id": {
+            "defaultValue": "/subscriptions/13477ac5-1b1f-4a93-aa54-cc3a0bf5aeca/resourceGroups/network-iaworkload_australia_east/providers/Microsoft.Network/virtualNetworks/network-iaworkload_australia_east-vnet1/subnets/enclave_insite",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_azpaloalto001v_name')]",
+            "apiVersion": "2018-10-01",
+            "location": "australiaeast",
+            "plan": {
+                "name": "bundle1",
+                "product": "vmseries1",
+                "publisher": "paloaltonetworks"
+            },
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D3_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "paloaltonetworks",
+                        "offer": "vmseries1",
+                        "sku": "bundle1",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "osdisk",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('https', '://', parameters('storageAccounts_azpaloaltofwstorage_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_azpaloalto001v_name'),'-b4laphz4bxyte.vhd'))]"
+                        },
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 60
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_azpaloalto001v_name')]",
+                    "adminUsername": "haladmin",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth0_name'))]",
+                            "properties": {
+                                "primary": true
+                            }
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth1_name'))]",
+                            "properties": {
+                                "primary": false
+                            }
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth2_name'))]",
+                            "properties": {
+                                "primary": false
+                            }
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth03_name'))]",
+                            "properties": {
+                                "primary": false
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_azpaloaltofwstorage_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth0_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth1_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth2_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth03_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth0_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "05b31a26-dfc4-42d6-9d35-42880a58bda1",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig-mgmt",
+                        "etag": "W/\"032aeefd-4c60-4d8d-b5ba-cecf8e3f86d0\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.133.237.100",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_halpaloalto_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth0_id')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "n2sywl51jk3evm2jwhq2n2uzja.px.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-D0-29-17",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "primary": true,
+                "tapConfigurations": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_halpaloalto_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth03_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "n/a",
+                "Cost Center (Network Code)": "1002361562"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "840e46ca-63a0-422e-be40-6b21be10de45",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"c74620c9-070b-4ec5-8945-71fa994cd16f\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.133.237.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth03_id')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "n2sywl51jk3evm2jwhq2n2uzja.px.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-D1-BC-B2",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "primary": false,
+                "tapConfigurations": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth1_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "2d2d3421-b4a2-467c-b596-628cc4b415f6",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig-untrust",
+                        "etag": "W/\"c9b51b8d-6af7-4d74-abec-cf428df54752\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.133.237.69",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth1_id')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "n2sywl51jk3evm2jwhq2n2uzja.px.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-D0-26-BA",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": true,
+                "primary": false,
+                "tapConfigurations": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth2_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "a0390ee5-9048-42f2-8fef-1bbdebdd6ba4",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig-trust",
+                        "etag": "W/\"c28a7132-b028-4eac-a366-c0cf01caa828\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.133.237.37",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[parameters('networkInterfaces_azpaloalto001v_halpaloalto_eth2_id')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "n2sywl51jk3evm2jwhq2n2uzja.px.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-D0-2C-B1",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": true,
+                "primary": false,
+                "tapConfigurations": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('networkSecurityGroups_DefaultNSG_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "68cc2cba-3ba6-40ba-8ee6-2344d0fc81b2",
+                "securityRules": [
+                    {
+                        "name": "Allow-Outside-From-IP",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Rule",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "0.0.0.0/0",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Allow-Intra",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow intra network traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "10.133.237.0/24",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 101,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Default-Deny",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Default-Deny if we don't match Allow rule",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 200,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ],
+                "defaultSecurityRules": [
+                    {
+                        "name": "AllowVnetInBound",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowAzureLoadBalancerInBound",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from azure load balancer",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all inbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowVnetOutBound",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowInternetOutBound",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to Internet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "Internet",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllOutBound",
+                        "etag": "W/\"46afb9bb-faf4-4e97-88c1-565597669a35\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all outbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "sku": {
+                "name": "Basic",
+                "tier": "Regional"
+            },
+            "name": "[parameters('publicIPAddresses_halpaloalto_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "b08965c4-491c-4960-afe6-7ee6dbbc5a95",
+                "ipAddress": "104.210.107.5",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4,
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('publicIPAddresses_halpaloalto_name')]",
+                    "fqdn": "[concat(parameters('publicIPAddresses_halpaloalto_name'),'.australiaeast.cloudapp.azure.com')]"
+                },
+                "ipTags": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "name": "[parameters('routeTables_mgmtroutetable_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "disableBgpRoutePropagation": false,
+                "routes": [
+                    {
+                        "name": "Internet",
+                        "etag": "W/\"88dc1fe2-6791-4939-980e-d0771f0a16c2\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "Internet"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "name": "[parameters('routeTables_trustroutetable_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "disableBgpRoutePropagation": false,
+                "routes": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "name": "[parameters('routeTables_untrustroutetable_name')]",
+            "apiVersion": "2018-12-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "disableBgpRoutePropagation": false,
+                "routes": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "name": "[parameters('storageAccounts_azpaloaltofwstorage_name')]",
+            "apiVersion": "2018-07-01",
+            "location": "australiaeast",
+            "tags": {
+                "Billing Status": "NOBILL",
+                "Cost Center (Network Code)": "1002361562",
+                "PSL (Department)": "IT RTO - IA compartment",
+                "Request Number": "N/A"
+            },
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": false,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_DefaultNSG_name'), '/', parameters('securityRules_Allow_Outside_From_IP_name'))]",
+            "apiVersion": "2018-12-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Rule",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "0.0.0.0/0",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_DefaultNSG_name'), '/', parameters('securityRules_Allow_Intra_name'))]",
+            "apiVersion": "2018-12-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Allow intra network traffic",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "10.133.237.0/24",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 101,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_DefaultNSG_name'), '/', parameters('securityRules_Default_Deny_name'))]",
+            "apiVersion": "2018-12-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "[concat(parameters('securityRules_Default_Deny_name'),' if we don't match Allow rule')]",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Deny",
+                "priority": 200,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "name": "[concat(parameters('routeTables_mgmtroutetable_name'), '/', parameters('routes_Internet_name'))]",
+            "apiVersion": "2018-12-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "[parameters('routes_Internet_name')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_mgmtroutetable_name'))]"
+            ]
+        }
+    ]
+}

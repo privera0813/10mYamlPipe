@@ -1,0 +1,247 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionCode": {
+      "type": "string",
+      "defaultValue": "INT",
+      "metadata": {
+        "description": "HAL IT Function Code - Example: INT or EXT"
+      }
+    },
+    "environmentCode": {
+      "type": "string",
+      "defaultValue": "DEV",
+      "metadata": {
+        "description": "HAL IT Environment Code - Example: DEV, PRD"
+      }
+    },
+    "productLineCode": {
+      "type": "string",
+      "defaultValue": "IT",
+      "metadata": {
+        "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+      }
+    },
+    "customerCode": {
+      "type": "string",
+      "defaultValue": "HAL",
+      "metadata": {
+        "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+      }
+    },
+    "typeCode": {
+      "type": "string",
+      "defaultValue": "SV",
+      "metadata": {
+        "description": "HAL IT Type - Example: WL or SV"
+      }
+    },
+    "locationCode": {
+      "type": "string",
+      "defaultValue": "southcentralus",
+      "metadata": {
+        "description": "Azure Location/Region - Example: southcentalus"
+      }
+    },
+    "regionCode": {
+      "type": "string",
+      "defaultValue": "USSC",
+      "metadata": {
+        "description": "HAL IT Region Code - Example: USSC"
+      }
+    },
+    "vmRoleCode": {
+      "type": "string",
+      "defaultValue": "APPL",
+      "metadata": {
+        "description": "HAL IT VM Code - Example: APPL, EXCH, SECR"
+      }
+    },
+    "storageregionCode": {
+      "type": "string",
+      "defaultValue": "ussc",
+      "metadata": {
+        "description": "HAL IT Region Code - Example: USSC"
+      }  
+    },
+    "UniqueNumberCode": {
+      "type": "string",
+      "defaultValue": "3000",
+      "metadata": {
+        "description": "Unique Number for Storage"
+      }
+    },
+    "vnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.0.0/16",
+      "metadata": {
+        "description": "Address prefix for the virtual network"
+      }
+    },
+    "subnet1Name": {
+      "type": "string",
+      "defaultValue": "subnet1",
+      "metadata": {
+        "description": "Name of the first subnet in the VNet"
+      }
+    },
+    "subnet1Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.0.0/24",
+      "metadata": {
+        "description": "Address prefix for subnet1"
+      }
+    },
+    "AzureFirewallSubnet": {
+    "type": "string",
+    "defaultValue": "AzureFirewallSubnet",
+    "metadata": {
+      "description": "Name of the subnet to add"
+      } 
+    },
+    "azureFirewallSubnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.2.0/24",
+      "metadata": {
+        "description": "AzureFirewallSubnet prefix"
+      }
+    },
+    "dmzSubnet": {
+    "type": "string",
+    "defaultValue": "dmzsubnet",
+    "metadata": {
+      "description": "Name of the subnet to add"
+      } 
+    },
+    "dmzSubnetAddressPrefix": {
+    "type": "string",
+    "defaultValue": "172.16.50.0/24",
+    "metadata": {
+      "description": "Address space of the subnet to add"
+      }
+    },
+    "appgatewaysubnet": {
+      "type": "string",
+      "defaultValue": "appgatewaysubnet",
+      "metadata": {
+        "description": "Name of the subnet to add"
+        }
+    },
+      "appgatewaySubnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.3.0/24",
+      "metadata": {
+        "description": "Address space of the subnet to add"
+        }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "metadata": {
+        "description": "Geo-replication type of Storage account"
+      },
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Premium_LRS"
+      ]
+    }
+},
+"variables": {
+  "storageAccountName":  "[concat(variables('storageregionCode'),'dt',variables('UniqueNumberCode'))]",
+  "storageregionCode": "[parameters('storageregionCode')]",
+  "UniqueNumberCode" : "[parameters('UniqueNumberCode')]",
+  "function": "[parameters('functionCode')]",
+  "region": "[parameters('regionCode')]",
+  "customer": "[parameters('customerCode')]",
+  "type": "[parameters('typeCode')]",
+  "location": "[parameters('locationCode')]",
+  "productLine": "[parameters('productLineCode')]",
+  "environment": "[parameters('environmentCode')]",
+  "dmzsubnet": "[parameters('dmzSubnet')]",
+  "dmzSubnetAddressPrefix": "[parameters('dmzSubnetAddressPrefix')]",
+  "appgatewaysubnetName" : "[parameters('appgatewaysubnet')]",
+  "appgatewaySubnetAddressPrefix": "[parameters('appgatewaySubnetAddressPrefix')]",
+  "azureFirewallSubnetAddressPrefix": "[parameters('azureFirewallSubnetAddressPrefix')]",
+  "AzureFirewallSubnet": "[parameters('AzureFirewallSubnet')]",
+  "subscription": "[concat(variables('function'), '-', variables('customer'), '-', variables('productLine'), '-', variables('environment'))]",
+  "vnetName": "[concat(variables('subscription'), '-', variables('region'), '-', variables('type'), '-', 'VNET', '1')]",
+  "subnetId": [
+    "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnet1Name'))]"
+     ]
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-09-01",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('vnetName')]",
+      "location": "[variables('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "subnet1",
+            "properties": {
+              "addressPrefix": "[parameters('subnet1Prefix')]",
+              "serviceEndpoints": [
+                {
+                  "service": "Microsoft.Storage"
+                }
+              ]
+            }
+          },
+           {
+          "name": "[variables('appgatewaysubnetName')]",
+          "properties": {
+            "addressPrefix": "[variables('appgatewaySubnetAddressPrefix')]"
+            }
+         },
+          {
+            "name": "[variables('dmzsubnet')]",
+            "properties": {
+              "addressPrefix": "[variables('dmzSubnetAddressPrefix')]"
+             }
+          },
+           {
+            "name": "[variables('azureFirewallSubnet')]",
+            "properties": {
+              "addressPrefix": "[variables('azureFirewallSubnetAddressPrefix')]"
+             }
+           }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2017-06-01",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+      ],
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "kind": "Storage",
+      "properties": {
+        "networkAcls": {
+          "bypass": "None",
+          "virtualNetworkRules": [
+            {
+              "id": "[variables('subnetId')[0]]",
+              "action": "Allow"
+            }
+          ],
+          "defaultAction": "Deny"
+        }
+      }
+    }
+  ]
+   }
+

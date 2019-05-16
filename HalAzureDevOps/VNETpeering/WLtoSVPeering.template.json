@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "existingLocalVirtualNetworkName": {
+      "type": "string",
+      "defaultValue": "INT-HAL-IT-DEV-USSC-WL-VNET1",
+      "metadata": {
+        "description": "Set the local VNet name"
+      }
+    },
+    "existingRemoteVirtualNetworkName": {
+      "type": "string",
+      "defaultValue": "INT-HAL-IT-DEV-USSC-SV-VNET1",
+      "metadata": {
+        "description": "Set the remote VNet name"
+      }
+    },
+    "existingRemoteVirtualNetworkResourceGroupName": {
+      "type": "string",
+      "defaultValue": "SVNET-RG",
+      "metadata": {
+          "description": "Sets the remote VNet Resource group"
+      }
+    },
+    "locationCode": {
+      "type": "string",
+      "defaultValue": "southcentralus",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    }
+  },
+  "variables": {
+    "remoteVNet": "[resourceId(parameters('existingRemoteVirtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', variables('existingRemoteVirtualNetworkName'))]",
+    "peeringName": "[concat(parameters('existingLocalVirtualNetworkName'), '/workload-to-service')]",
+    "existingLocalVirtualNetworkName": "[parameters('existingLocalVirtualNetworkName')]",
+    "existingRemoteVirtualNetworkName": "[parameters('existingRemoteVirtualNetworkName')]",
+    "location": "[parameters('locationCode')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-06-01",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "name": "[variables('peeringName')]",
+      "location": "[variables('location')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[variables('remoteVNet')]"
+        }
+      }
+    }
+  ]
+}

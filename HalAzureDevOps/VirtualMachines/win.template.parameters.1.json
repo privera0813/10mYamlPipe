@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/270086d6-d0b4-4c74-87dc-44ad8c9b6fed/resourceGroups/HAL-SVNET-RG/providers/Microsoft.KeyVault/vaults/keyvaultaz01"
+        },
+        "secretName": "vaultaz01"
+      }
+   }
+  }
+}

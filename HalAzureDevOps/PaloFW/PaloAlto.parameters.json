@@ -1,0 +1,63 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "routeTables_mgmtroutetable_name": {
+            "value": null
+        },
+        "routeTables_trustroutetable_name": {
+            "value": null
+        },
+        "publicIPAddresses_halpaloalto_name": {
+            "value": null
+        },
+        "routeTables_untrustroutetable_name": {
+            "value": null
+        },
+        "virtualMachines_azpaloalto001v_name": {
+            "value": null
+        },
+        "networkSecurityGroups_DefaultNSG_name": {
+            "value": null
+        },
+        "storageAccounts_azpaloaltofwstorage_name": {
+            "value": null
+        },
+        "routes_Internet_name": {
+            "value": null
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth0_name": {
+            "value": null
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth1_name": {
+            "value": null
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth2_name": {
+            "value": null
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth03_name": {
+            "value": null
+        },
+        "securityRules_Allow_Intra_name": {
+            "value": null
+        },
+        "securityRules_Default_Deny_name": {
+            "value": null
+        },
+        "securityRules_Allow_Outside_From_IP_name": {
+            "value": null
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth0_id": {
+            "value": null
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth03_id": {
+            "value": null
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth1_id": {
+            "value": null
+        },
+        "networkInterfaces_azpaloalto001v_halpaloalto_eth2_id": {
+            "value": null
+        }
+    }
+}

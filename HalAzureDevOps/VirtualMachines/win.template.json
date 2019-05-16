@@ -1,0 +1,399 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionCode": {
+      "type": "string",
+      "defaultValue": "INT",
+      "metadata": {
+        "description": "HAL IT Function Code - Example: INT or EXT"
+      }
+  },
+    "environmentCode": {
+      "type": "string",
+      "defaultValue": "DEV",
+      "metadata": {
+        "description": "HAL IT Environment Code - Example: DEV, PRD"
+      }
+  },
+    "productLineCode": {
+      "type": "string",
+      "defaultValue": "IT",
+      "metadata": {
+        "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+      }
+  },
+    "customerCode": {
+      "type": "string",
+      "defaultValue": "HAL",
+      "metadata": {
+        "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+      }
+  },
+    "typeCode": {
+      "type": "string",
+      "defaultValue": "SV",
+      "metadata": {
+        "description": "HAL IT Type - Example: WL or SV"
+      }
+  },
+    "locationCode": {
+      "type": "string",
+      "defaultValue": "southcentralus",
+      "metadata": {
+        "description": "Azure Location/Region - Example: southcentalus"
+      }
+  },
+    "regionCode": {
+      "type": "string",
+      "defaultValue": "USSC",
+      "metadata": {
+        "description": "HAL IT Region Code - Example: USSC"
+      }
+  },
+    "vmRoleCode": {
+      "type": "string",
+      "defaultValue": "APPL",
+      "metadata": {
+        "description": "HAL IT VM Code - Example: APPL, EXCH, SECR"
+      }
+  },
+    "applicationIDTag": {
+    "type": "string",
+    "defaultValue": "NA",
+    "metadata": {
+      "description": "ResourceTag - SQLDB"
+      }
+  },
+    "applicationNameTag": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "ResourceTag - Example Name: Shared Service Monitoring"
+      }
+  },
+    "applicationOwnerTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example Owner: Thomas Jefferson"
+      }
+  },
+    "businessOwnerTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example Owner: George Washington"
+      }
+  },
+    "billingStatusTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: Billed"
+        }
+  },
+    "costCenterTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - 123456789"
+      }
+  },
+    "requestnumberStatusTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: Request Number 7184"
+        }
+  },
+      "pslTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+      "description": "ResourceTag - Example: Department LMKPublicCloudTest"
+         }
+  },
+    "environmentNameTag": {
+      "type": "string",
+      "defaultValue": "Development",
+      "metadata": {
+        "description": "ResourceTag - Environment Full Name - Development, Production"
+      }
+    },
+    "projectIDTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example: P1234"
+      }
+   
+    },
+    "primaryFunctionTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example: Transporting - non sensitive data information"
+      }
+    },
+    "mgmtAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.50.0/16",
+      "metadata": {
+        "description": "The name of the management address prefix"
+      }
+    },
+    "mgmtSubnetPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.50.0/24",
+      "metadata": {
+        "description": "The name of the management subnet prefix"
+      }
+    },
+    "mgmtSubnetName": {
+      "type": "string",
+      "defaultValue": "mgmtSubnet",
+      "metadata": {
+        "description": "The name of the management subnet"
+      }
+    },
+    "AzureFirewallSubnetName": {
+      "type": "string",
+      "defaultValue": "AzureFirewallSubnet",
+      "metadata": {
+        "description": "The name of the first subnet"
+      }
+    },
+    "AzureFirewallSubnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.2.0/24",
+      "metadata": {
+        "description": "Firewall Subnet prefix"
+      }
+    },
+    "virtualNetworkResourceGroup": {
+      "type": "string",
+      "defaultValue": "SVNET-RG",
+      "metadata": {
+        "description": "Resource Group VNET is deployed in"
+      }
+    },
+    "nicName": {
+      "type": "string",
+      "defaultValue": "azusscjump01-nic",
+      "metadata": {
+        "description": "Name of Virtual Machine"
+      }
+    },
+    "vmName": {
+      "type": "string",
+      "defaultValue": "azusscjump01",
+      "metadata": {
+        "description": "Name of Virtual Machine"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_DS2_v2",
+      "metadata": {
+        "description": "Size of Virtual Machine"
+      }
+    },
+    "publicIPAddressName": {
+      "type": "string",
+      "defaultValue": "azusscjump01-PIP",
+      "metadata": {
+        "description": "Name of Public IP Address"
+      }
+    },
+    "publicIPAddressType": {
+      "type": "string",
+      "defaultValue": "Dynamic",
+      "metadata": {
+        "description": "Public IP Address Type. EX: Static or Dynamic"
+      }
+  },
+    "adminUsername": {
+      "type": "string",
+      "defaultValue": "halaz01",
+      "metadata": {
+        "description": "User name for the Virtual Machine."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+         }
+    },
+    "imagePublisher": {
+          "type": "securestring",
+          "defaultValue": "MicrosoftWindowsServer",
+          "metadata": {
+            "description": "Password for the Virtual Machine."
+             }
+    },
+    "imageOffer": {
+      "type": "securestring",
+      "defaultValue": "WindowsServer",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+         }                           
+    },
+    "windowsOSVersion": {
+      "type": "string",
+      "defaultValue": "2016-Datacenter",
+      "allowedValues": [
+        "2008-R2-SP1",
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "2016-Datacenter"
+      ],
+      "metadata": {
+        "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version. Allowed values: 2008-R2-SP1, 2012-Datacenter, 2012-R2-Datacenter."
+      }
+    }
+  },
+  "variables": {
+    "function": "[parameters('functionCode')]",
+    "environment": "[parameters('environmentCode')]",
+    "productLine": "[parameters('productLineCode')]",
+    "customer": "[parameters('customerCode')]",
+    "type": "[parameters('typeCode')]",
+    "location": "[parameters('locationCode')]",
+    "region": "[parameters('regionCode')]",
+    "vmRole": "[parameters('vmRoleCode')]",
+    "virtualNetworkResourceGroup": "[parameters('virtualNetworkResourceGroup')]",
+    "applicationID":  "[parameters('applicationIDTag')]",
+    "applicationName":  "[parameters('applicationNameTag')]",
+    "applicationOwner":  "[parameters('applicationOwnerTag')]",
+    "businessOwner":  "[parameters('businessOwnerTag')]",
+    "billingStatus": "[parameters('billingStatusTag')]",
+    "requestnumberStatus": "[parameters('requestnumberStatusTag')]",
+    "costCenter": "[parameters('costCenterTag')]",
+    "psl": "[parameters('pslTag')]",
+    "environmentName": "[parameters('EnvironmentNameTag')]",
+    "projectID": "[parameters('projectIDTag')]",
+    "primaryFunction": "[parameters('PrimaryFunctionTag')]",
+    "subscription": "[concat(variables('function'), '-', variables('customer'), '-', variables('productLine'), '-', variables('environment'))]",
+    "imagePublisher": "[parameters('imagePublisher')]",
+    "imageOffer": "[parameters('imageOffer')]",
+    "adminPassword":"[parameters('adminPassword')]",
+    "nicName": "[parameters('nicName')]",
+    "mgmtAddressPrefix": "[parameters('mgmtAddressPrefix')]",
+    "mgmtSubnetName": "[parameters('mgmtSubnetName')]",
+    "mgmtSubnetPrefix": "[parameters('mgmtSubnetPrefix')]",
+    "AzureFirewallSubnetName": "[parameters('AzureFirewallSubnetName')]",
+    "AzureFirewallSubnetAddressPrefix": "[parameters('AzureFirewallSubnetAddressPrefix')]",
+    "publicIPAddressName": "[parameters('publicIPAddressName')]",
+    "publicIPAddressType": "[parameters('publicIPAddressType')]",
+    "windowsOSVersion": "[parameters('windowsOSVersion')]",
+    "vmName": "[parameters('vmName')]",
+    "vmSize": "[parameters('vmSize')]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/', variables('mgmtSubnetName'))]",
+    "apiVersion": "2015-06-15",
+    "vnetID": "[resourceId(variables('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+    "vnetName": "[concat(variables('subscription'), '-', variables('region'), '-', variables('type'), '-', 'VNET', '1')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "Billing Status": "[variables('billingStatus')]",
+        "Request Number": "[variables('requestnumberStatus')]",
+        "Cost Center (Network Code)": "[variables('costCenter')]",
+        "PSL (Department)": "[variables('psl')]"
+        },
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+        }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('nicName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "Billing Status": "[variables('billingStatus')]",
+        "Request Number": "[variables('requestnumberStatus')]",
+        "Cost Center (Network Code)": "[variables('costCenter')]",
+        "PSL (Department)": "[variables('psl')]"
+        },
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfigjumpwin",
+            "tags": {
+              "Billing Status": "[variables('billingStatus')]",
+              "Request Number": "[variables('requestnumberStatus')]",
+              "Cost Center (Network Code)": "[variables('costCenter')]",
+              "PSL (Department)": "[variables('psl')]"
+              },
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+              },
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2016-04-30-preview",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vmName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "Billing Status": "[variables('billingStatus')]",
+        "Request Number": "[variables('requestnumberStatus')]",
+        "Cost Center (Network Code)": "[variables('costCenter')]",
+        "PSL (Department)": "[variables('psl')]"
+        },
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vmName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[variables('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('windowsOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[variables('vmName')]",
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "Premium_LRS"
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

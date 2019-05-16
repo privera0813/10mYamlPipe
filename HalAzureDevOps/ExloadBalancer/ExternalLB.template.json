@@ -1,0 +1,280 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dnsNameforLBIP": {
+      "type": "string",
+      "defaultValue": "northcentralaz0101",
+      "metadata": {
+        "description": "Unique DNS name"
+      }
+    },
+    "functionCode": {
+      "type": "string",
+      "defaultValue": "INT",
+      "metadata": {
+        "description": "HAL IT Function Code - Example: INT or EXT"
+      }
+    },
+    "environmentCode": {
+    "type": "string",
+    "defaultValue": "DEV",
+    "metadata": {
+      "description": "HAL IT Environment Code - Example: DEV, PRD"
+     }
+    },
+    "productLineCode": {
+      "type": "string",
+      "defaultValue": "IT",
+      "metadata": {
+        "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+        }
+    },
+    "customerCode": {
+      "type": "string",
+      "defaultValue": "HAL",
+      "metadata": {
+        "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+        }
+    },
+      "typeCode": {
+        "type": "string",
+        "defaultValue": "SV",
+        "metadata": {
+          "description": "HAL IT Type - Example: WL or SV"
+        }
+    },
+      "locationCode": {
+        "type": "string",
+        "defaultValue": "southcentralus",
+        "metadata": {
+          "description": "Azure Location/Region - Example: southcentalus"
+        }
+    },
+      "vmRoleCode": {
+        "type": "string",
+        "defaultValue": "APPL",
+        "metadata": {
+          "description": "HAL IT VM Code - Example: APPL, EXCH, SECR"
+        }
+    },
+      "regionCode": {
+      "type": "string",
+      "defaultValue": "USSC",
+      "metadata": {
+      "description": "HAL IT Region Code - Example: USSC"
+        }
+    },
+      "serviceCode": {
+        "type": "string",
+        "defaultValue": "app",
+        "metadata": {
+          "description": "The type of the service. Example - app"
+        }
+    },
+    "loadBalancerName": {
+      "type": "string",
+      "defaultValue": "ILB-AM-EastUS-Prod-OpenText-FE",
+      "metadata": {
+        "description": "Load Balancer name"
+      }
+    },
+    "existingVirtualNetworkName": {
+      "type": "string",
+      "defaultValue": "INT-HAL-IT-DEV-USSC-SV-VNET1",
+      "metadata": {
+        "description": "VNET name"
+      }
+    },
+    "existingSubnetName": {
+      "type": "string",
+      "defaultValue": "mgmtsubnet",
+      "metadata": {
+        "description": "Name of the subnet where the LB will be deployed"
+      }
+    },
+    "environment": {
+      "type": "string",
+      "defaultValue": "Dev",
+      "metadata": {
+        "description": "Environment Name - Dev, Uat, Prod, POC"
+      },
+      "minLength": 1,
+      "maxLength": 4
+    },
+    "application": {
+      "type": "string",
+      "defaultValue": "LMX",
+      "metadata": {
+        "description": "Application - LMX, ELX, etc"
+      }
+    },
+    "applicationNameTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example Name: FSS_BPC_Integration"
+      }
+    },
+    "applicationOwnerTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example Owner: Sai Pathak"
+      }
+    },
+    "applicationIDTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - "
+      }
+    },
+    "businessOwnerTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example Owner: John Mo"
+      }
+    },
+    "costCenterTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - 123456789"
+      }
+    },
+    "environmentNameTag": {
+      "type": "string",
+      "defaultValue": "Development",
+      "metadata": {
+        "description": "ResourceTag - Environment Full Name - Development, Production"
+      }
+    },
+    "projectIDTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example: P1234"
+      }
+    },
+    "billingStatusTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: Billed"
+       }
+    },
+      "requestnumberStatusTag": {
+          "type": "string",
+          "defaultValue": "NA",
+          "metadata": {
+            "description": "ResourceTag - Example: Request Number 7184"
+       }
+    },
+      "pslTag": {
+         "type": "string",
+         "defaultValue": "NA",
+         "metadata": {
+         "description": "ResourceTag - Example: Department LMKPublicCloudTest"
+      }
+    },
+    "primaryFunctionTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example: Transporting - non sensitive data information"
+      }
+    },
+    "serviceNameCode": {
+      "type": "string",
+      "defaultValue": "HDINSITE",
+      "metadata": {
+        "description": "The type of the service or service name. Example - app or HDINSITE,"
+      }
+    }
+  },
+  "variables": {
+    "function": "[parameters('functionCode')]",
+    "environment": "[parameters('environmentCode')]",
+    "productLine": "[parameters('productLineCode')]",
+    "customer": "[parameters('customerCode')]",
+    "type": "[parameters('typeCode')]",
+    "location": "[parameters('locationCode')]",
+    "region": "[parameters('regionCode')]",
+    "vmRole": "[parameters('vmRoleCode')]",
+    "subscription": "[concat(variables('function'), '-', variables('customer'), '-', variables('productLine'), '-', variables('environment'))]",
+    "applicationID":  "[parameters('applicationIDTag')]",
+    "applicationName":  "[parameters('applicationNameTag')]",
+    "applicationOwner":  "[parameters('applicationOwnerTag')]",
+    "businessOwner":  "[parameters('businessOwnerTag')]",
+    "costCenter": "[parameters('costCenterTag')]",
+    "environmentName":"[parameters('EnvironmentNameTag')]",
+    "projectID": "[parameters('projectIDTag')]",
+    "billingStatus": "[parameters('billingStatusTag')]",
+    "requestnumberStatus": "[parameters('requestnumberStatusTag')]",
+    "psl": "[parameters('pslTag')]",
+    "primaryFunction": "[parameters('PrimaryFunctionTag')]",
+    "service": "[parameters('serviceCode')]",
+    "serviceName": "[parameters('serviceCode')]",
+    "publicIPAddressType": "Static",
+    "publicIPAddressName": "[concat(variables('service'), '-', 'IP')]",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('existingVirtualNetworkName'), parameters('existingSubnetName'))]",
+    "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
+    "lbID": "[resourceId('Microsoft.Network/loadBalancers',parameters('loadBalancerName'))]",
+    "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontend')]",
+    "exlbName": "[concat(variables('serviceName'), '-', 'LB')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+          "Cost Center (Network Code)": "[variables('costCenter')]",
+          "Billing Status": "[variables('billingStatus')]",
+          "Request Number": "[variables('requestnumberStatus')]",
+          "PSL (Department)": "[variables('psl')]"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('dnsNameforLBIP')]"
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "name": "[variables('exlbName')]",
+      "type": "Microsoft.Network/loadBalancers",
+      "location": "[resourceGroup().location]",
+      "tags": {
+          "costCenter": "[variables('costCenter')]",
+          "billingStatusTag": "[variables('billingStatus')]",
+          "requestnumberStatusTag": "[variables('requestnumberStatus')]",
+          "psl": "[variables('psl')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "LoadBalancerFrontend",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[variables('publicIPAddressID')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "LoadBalancerBackend"
+          }
+        ]
+      }
+    }
+  ]
+}

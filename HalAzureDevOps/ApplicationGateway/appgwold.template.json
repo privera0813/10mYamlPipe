@@ -1,0 +1,444 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "functionCode": {
+      "type": "string",
+      "defaultValue": "INT",
+      "metadata": {
+        "description": "HAL IT Function Code - Example: INT or EXT"
+      }
+    },
+    "environmentCode": {
+      "type": "string",
+      "defaultValue": "DEV",
+      "metadata": {
+           "description": "HAL IT Environment Code - Example: DEV, PRD"
+        }
+    },
+    "productLineCode": {
+      "type": "string",
+      "defaultValue": "IT",
+      "metadata": {
+        "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+        }
+    },
+    "customerCode": {
+      "type": "string",
+      "defaultValue": "HAL",
+      "metadata": {
+        "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+      }
+    },
+    "typeCode": {
+      "type": "string",
+      "defaultValue": "SV",
+      "metadata": {
+        "description": "HAL IT Type - Example: WL or SV"
+      }
+    },
+    "locationCode": {
+      "type": "string",
+      "defaultValue": "southcentralus",
+      "metadata": {
+        "description": "Azure Location/Region - Example: southcentalus"
+      }
+    },
+    "vmRoleCode": {
+      "type": "string",
+      "defaultValue": "APPL",
+      "metadata": {
+        "description": "HAL IT VM Code - Example: APPL, EXCH, SECR"
+      }
+    },
+    "regionCode": {
+    "type": "string",
+    "defaultValue": "USSC",
+    "metadata": {
+    "description": "HAL IT Region Code - Example: USSC"
+      }
+    },
+    "serviceCode": {
+      "type": "string",
+      "defaultValue": "app",
+      "metadata": {
+        "description": "The type of the service. Example - app"
+      }
+    },
+      "roleCode": {
+        "type": "string",
+        "defaultValue": "APP1",
+        "metadata": {
+          "description": "The type of the role. Example - HDINSITE"
+        }
+    },
+      "tier": {
+        "type": "string",
+        "defaultValue": "WAF"
+      },
+      "skuSize": {
+        "type": "string",
+        "defaultValue": "WAF_Medium"
+      },
+      "capacity": {
+        "type": "int",
+        "defaultValue": 2
+      },
+      "backendIPAddress1": { 
+        "type": "string",
+        "defaultValue": "172.16.3.25",
+        "metadata": {
+        "description": "The respource group where resources will be deployed."
+        }
+      },
+      "virtualNetworkRGName": { 
+        "type": "string", 
+        "defaultValue": "HAL-SVNET-RG",
+        "metadata": {
+        "description": "The respource group where resources will be deployed."
+        }
+      },
+     "subnetName": {
+        "type": "string",
+        "defaultValue": "appgatewaysubnet"
+    },
+      "location": {
+        "type": "string",
+        "defaultValue": "southcentralus"
+    },
+      "virtualNetworkName": { 
+        "type": "string",
+        "defaultValue": "INT-HAL-IT-DEV-USSC-SV-VNET1",
+        "metadata": {
+        "description": "The respource group where resources will be deployed."
+        }
+      
+      },
+      "privateIPAddress": {
+        "type": "string",
+        "defaultValue": "172.16.3.51",
+        "metadata": {
+          "description": "The private IP Address for the application gateway"
+        }
+      },
+      "publicIPAddressName": {
+        "type": "string",
+        "defaultValue": "AAG-PIP",
+        "metadata": {
+          "description": "Public IP Address Name"
+        }
+      },
+      "environmentNameTag": {
+        "type": "string",
+        "defaultValue": "Dev",
+        "metadata": {
+          "description": "Environment Name - Dev, Uat, Prod, POC"
+        },
+        "minLength": 1,
+        "maxLength": 4
+      },
+      "application": {
+        "type": "string",
+        "defaultValue": "LMX",
+        "metadata": {
+          "description": "Application - LMX, ELX, etc"
+        }
+      },
+      "region": {
+        "type": "string",
+        "defaultValue": "AM",
+        "metadata": {
+          "description": "Geographical Region - AM, EU, AP"
+        }
+      },
+      "applicationNameTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example Name: FSS_BPC_Integration"
+        }
+      },
+      "applicationOwnerTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example Owner: Sai Pathak"
+        }
+      },
+      "applicationDeveloper": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - FSS_BPC_Integration"
+        }
+      },
+      "applicationIDTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - "
+        }
+      },
+      "applicationDescription": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example Description: FSS application provides an automated�."
+        }
+      },
+      "businessOwnerTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example Owner: John Mo"
+        }
+      },
+      "costCenterTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - 123456789"
+        }
+      },
+      "departmentOrBrand": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: Bumble Bumble"
+        }
+      },
+      "environmentTag": {
+        "type": "string",
+        "defaultValue": "Development",
+        "metadata": {
+          "description": "ResourceTag - Environment Full Name - Development, Production"
+        }
+      },
+      "projectIDTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: P1234"
+        }
+      },
+      "billingStatusTag": {
+          "type": "string",
+          "defaultValue": "NA",
+          "metadata": {
+            "description": "ResourceTag - Example: Billed"
+          }
+      },
+        "requestnumberStatusTag": {
+            "type": "string",
+            "defaultValue": "NA",
+            "metadata": {
+              "description": "ResourceTag - Example: Request Number 7184"
+         }
+      },
+        "pslTag": {
+           "type": "string",
+           "defaultValue": "NA",
+           "metadata": {
+           "description": "ResourceTag - Example: Department LMKPublicCloudTest"
+        }
+      },
+      "primaryFunctionTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: Transporting - non sensitive data information"
+        }
+      }
+    },
+    "variables": {
+      "baseNamingPrefix": "[concat(parameters('region'), '-',  parameters('location'), '-', parameters('environmentNameTag'), '-', parameters('application'))]",
+      "function": "[parameters('functionCode')]",
+      "environment": "[parameters('environmentCode')]",
+      "productLine": "[parameters('productLineCode')]",
+      "customer": "[parameters('customerCode')]",
+      "type": "[parameters('typeCode')]",
+      "location": "[parameters('locationCode')]",
+      "region": "[parameters('regionCode')]",
+      "vmRole": "[parameters('vmRoleCode')]",
+      "subscription": "[concat(variables('function'), '-', variables('customer'), '-', variables('productLine'), '-', variables('environment'))]",
+      "applicationID":  "[parameters('applicationIDTag')]",
+      "applicationName":  "[parameters('applicationNameTag')]",
+      "applicationOwner":  "[parameters('applicationOwnerTag')]",
+      "businessOwner":  "[parameters('businessOwnerTag')]",
+      "costCenter": "[parameters('costCenterTag')]",
+      "privateIPAddress": "[parameters('privateIPAddress')]",
+      "environmentName":"[parameters('EnvironmentNameTag')]",
+      "projectID": "[parameters('projectIDTag')]",
+      "billingStatus": "[parameters('billingStatusTag')]",
+      "requestnumber": "[parameters('requestnumberStatusTag')]",
+      "psl": "[parameters('pslTag')]",
+      "primaryFunction": "[parameters('PrimaryFunctionTag')]",
+      "backendIpAddress1": "[parameters('backendIpAddress1')]",
+      "service": "[parameters('serviceCode')]",
+      "role": "[parameters('roleCode')]",
+      "tier": "parameters('tier')",
+      "sku": "parameters('skuSize')",
+      "capacity": "parameters('capacity')",
+      "RGName": "[parameters('virtualNetworkRGName')]",
+      "appGwName": "[concat(variables('role'), '-', 'AAG')]",
+      "appgwinfo": "[concat(variables('appgwipinfo'), '/subnets/', parameters('subnetName'))]",
+      "applicationGatewayID": "[resourceId('Microsoft.Network/applicationGateways', variables('appGwName'))]",
+      "appgwipinfo": "[resourceId(parameters('virtualNetworkRGName'),'Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+      "vnetName": "[concat(variables('subscription'), '-', variables('region'), '-', variables('type'), '-', 'VNET', '1')]"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Network/publicIPAddresses",
+       "apiVersion": "2018-10-01",
+       "name": "[parameters('publicIPAddressName')]",
+       "location": "[parameters('location')]",
+       "sku": {
+         "name": "Basic"
+        },
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic",
+          "dnsSettings": {
+              "domainNameLabel": "[concat('appgw-vm-', uniqueString(resourceGroup().id))]"
+            }
+          }
+       },
+       {
+        "name": "[variables('appGwName')]",
+        "type": "Microsoft.Network/applicationGateways",
+        "apiVersion": "2018-02-01",
+        "location": "[variables('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', parameters('publicIPAddressName'))]"
+        ],
+        "tags": {
+          "costCenter": "[variables('costCenter')]",
+          "billingStatus": "[variables('billingStatus')]",
+          "requestnumber":"[variables('requestnumber')]",
+          "psl": "[variables('psl')]"
+        },
+        "properties": {
+          "sku": {
+            "name": "[parameters('skuSize')]",
+            "tier": "[parameters('tier')]",
+            "capacity": "[parameters('capacity')]"
+          },
+          "gatewayIPConfigurations": [
+            {
+              "name": "appGatewayIpConfig",
+              "properties": {
+                "subnet": {
+                  "id": "[variables('appgwinfo')]"
+                }
+              }
+            }
+          ],
+          "frontendIPConfigurations": [
+            {
+              "name": "appGatewayFrontendIP",
+              "properties": {
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
+              }
+             }
+            }
+          ],
+          "frontendPorts": [
+            {
+              "name": "appGatewayFrontendPort",
+              "properties": {
+                "Port": 80
+              }
+            }
+          ],
+          "backendAddressPools": [
+            {
+              "name": "appGatewayDefaultBackendPool",
+              "properties": {
+                "backendAddresses": [
+                  {
+                    "IpAddress": "[variables('backendIpAddress1')]"
+                  }
+                ]
+              }
+            }
+          ],
+          "backendHttpSettingsCollection": [
+            {
+              "name": "appGatewayBackendHttpSettings",
+              "properties": {
+                "Port": 8080,
+                "Protocol": "Http",
+                "CookieBasedAffinity": "Disabled",
+                "probe": {
+                  "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGwName')), '/probes/appGatewayHealthProbe')]"
+                }
+              },
+              "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+            }
+          ],
+          "httpListeners": [
+            {
+              "name": "appGatewayHttpListener",
+              "properties": {
+                "FrontendIPConfiguration": {
+                  "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendIP')]"
+                },
+                "FrontendPort": {
+                  "id": "[concat(variables('applicationGatewayID'), '/frontendPorts/appGatewayFrontendPort')]"
+                },
+                "Protocol": "Http",
+                "SslCertificate": null
+              }
+            }
+          ],
+          "requestRoutingRules": [
+            {
+              "Name": "rule1",
+              "properties": {
+                "RuleType": "Basic",
+                "httpListener": {
+                  "id": "[concat(variables('applicationGatewayID'), '/httpListeners/appGatewayHttpListener')]"
+                },
+                "backendAddressPool": {
+                  "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appGatewayDefaultBackendPool')]"
+                },
+                "backendHttpSettings": {
+                  "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+                }
+              }
+            }
+          ],
+          "probes": [
+            {
+              "name": "appGatewayHealthProbe",
+              "properties": {
+                "protocol": "Http",
+                "host": "127.0.0.1",
+                "path": "/probe",
+                "interval": 30,
+                "timeout": 30,
+                "unhealthyThreshold": 3,
+                "pickHostNameFromBackendHttpSettings": false,
+                "minServers": 0,
+                "match": {
+                  "body": "",
+                  "statusCodes": [
+                    "200-399"
+                  ]
+                }
+              },
+              "type": "Microsoft.Network/applicationGateways/probes"
+            }
+          ],
+          "sslCertificates": [],
+          "webApplicationFirewallConfiguration": {
+            "enabled": true,
+            "firewallMode": "Prevention",
+            "ruleSetType": "OWASP",
+            "ruleSetVersion": "3.0"
+          }
+  
+        }
+      }
+    ]
+  }

@@ -1,0 +1,221 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "functionCode": {
+        "type": "string",
+        "defaultValue": "INT",
+        "metadata": {
+          "description": "HAL IT Function Code - Example: INT or EXT"
+        }
+      },
+      "environmentCode": {
+        "type": "string",
+        "defaultValue": "DEV",
+        "metadata": {
+          "description": "HAL IT Environment Code - Example: DEV, PRD"
+        }
+      },
+      "productLineCode": {
+        "type": "string",
+        "defaultValue": "IT",
+        "metadata": {
+          "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+        }
+      },
+      "customerCode": {
+        "type": "string",
+        "defaultValue": "HAL",
+        "metadata": {
+          "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+        }
+      },
+      "typeCodeSV": {
+        "type": "string",
+        "defaultValue": "SV",
+        "metadata": {
+          "description": "HAL IT Type - Example: WL or SV"
+        }
+      },
+      "typeCodeWL": {
+        "type": "string",
+        "defaultValue": "WL",
+        "metadata": {
+          "description": "HAL IT Type - Example: WL or SV"
+        }
+      },
+      "locationCode": {
+        "type": "string",
+        "defaultValue": "southcentralus",
+        "metadata": {
+          "description": "Azure Location/Region - Example: southcentalus"
+        }
+      },
+      "regionCode": {
+        "type": "string",
+        "defaultValue": "USSC",
+        "metadata": {
+          "description": "HAL IT Region Code - Example: USSC"
+        }
+      },
+      "vmRoleCode": {
+        "type": "string",
+        "defaultValue": "APPL",
+        "metadata": {
+          "description": "HAL IT VM Code - Example: APPL, EXCH, SECR"
+        }
+      },
+      "applicationIDTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - SQLDB"
+        }
+      },
+      "applicationNameTag": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "description": "ResourceTag - Example Name: Shared Service Monitoring"
+        }
+      },
+      "applicationOwnerTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example Owner: Thomas Jefferson"
+        }
+      },
+      "businessOwnerTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example Owner: George Washington"
+        }
+      },
+      "costCenterTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - 123456789"
+        }
+      },
+      "pslTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+        "description": "ResourceTag - Example: Department LMKPublicCloudTest"
+     }
+      },
+      "environmentNameTag": {
+        "type": "string",
+        "defaultValue": "Development",
+        "metadata": {
+          "description": "ResourceTag - Environment Full Name - Development, Production"
+        }
+      },
+      "projectIDTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: P1234"
+        }
+      },
+      "primaryFunctionTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: Transporting - non sensitive data information"
+        }
+      },
+      "vNet1Name": {
+        "type": "string",
+        "defaultValue": "INT-HAL-IT-DEV-USSC-SV-VNET1",
+        "metadata": {
+            "description": "Name for sharedservices"
+        }
+      },
+      "vNet2Name": {
+          "type": "string",
+          "defaultValue": "INT-HAL-IT-DEV-USSC-WL-VNET1",
+          "metadata": {
+              "description": "Name for workload1"
+          }
+      },
+      "vNet1ResourceGroupName": {
+          "type": "string",
+          "defaultValue": "SVNET-RG",
+          "metadata": {
+            "description": "Sets the remote VNet Resource group"
+          }
+        },
+        "vNet2ResourceGroupName": {
+          "type": "string",
+          "defaultValue": "WLNET-RG",
+          "metadata": {
+            "description": "Sets the remote VNet Resource group"
+          }
+        }
+  },
+  "variables": {
+    "function": "[parameters('functionCode')]",
+    "environment": "[parameters('environmentCode')]",
+    "productLine": "[parameters('productLineCode')]",
+    "customer": "[parameters('customerCode')]",
+    "typesv": "[parameters('typeCodeSV')]",
+    "typewl": "[parameters('typeCodeWL')]",
+    "location": "[parameters('locationCode')]",
+    "region": "[parameters('regionCode')]",
+    "vmRole": "[parameters('vmRoleCode')]",
+    "subscription": "[concat(variables('function'), '-', variables('customer'), '-', variables('productLine'), '-', variables('environment'))]",
+    "applicationID":  "[parameters('applicationIDTag')]",
+    "applicationName":  "[parameters('applicationNameTag')]",
+    "applicationOwner":  "[parameters('applicationOwnerTag')]",
+    "businessOwner":  "[parameters('businessOwnerTag')]",
+    "costCenter": "[parameters('costCenterTag')]",
+    "psl":"[parameters('pslTag')]",
+    "environmentName": "[parameters('EnvironmentNameTag')]",
+    "projectID": "[parameters('projectIDTag')]",
+    "primaryFunction": "[parameters('PrimaryFunctionTag')]",
+    "vnetNameSV": "[concat(variables('subscription'), '-', variables('region'), '-', variables('typesv'), '-', 'VNET', '1')]",
+    "vnetNameWL": "[concat(variables('subscription'), '-', variables('region'), '-', variables('typewl'), '-', 'VNET', '1')]",
+    "vNet1tovNet2PeeringName": "[concat(variables('vnetNameSV'), '-', variables('vnetNameWL'))]",
+    "vNet2tovNet1PeeringName": "[concat(variables('vnetNameWL'), '-', variables('vnetNameSV'))]",
+    "vNet1ID": "[resourceId(parameters('vNet1ResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('vNet1Name'))]",
+    "vNet2ID": "[resourceId(parameters('vNet2ResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('vNet2Name'))]"
+  },
+  "resources": [
+          {
+              "apiVersion": "2016-06-01",
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "name": "[concat(variables('vnetNameSV'),'/',variables('vNet1tovNet2PeeringName'))]",
+              "location": "[resourceGroup().location]",
+              "comments": "This is the peering from vNet 1 to vNet 2",
+              "properties": {
+                  "allowVirtualNetworkAccess": "true",
+                  "allowForwardedTraffic": "true",
+                  "allowGatewayTransit": "false",
+                  "useRemoteGateways": "false",
+                  "remoteVirtualNetwork": {
+                      "id": "[variables('vNet2ID')]"
+                  }
+              }
+          },
+          {
+              "apiVersion": "2016-06-01",
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "name": "[concat(variables('vnetNameWL'),'/',variables('vNet2tovNet1PeeringName'))]",
+              "location": "[resourceGroup().location]",
+              "comments": "This is the peering from vNet 2 to vNet 1",
+              "properties": {
+                  "allowVirtualNetworkAccess": "true",
+                  "allowForwardedTraffic": "true",
+                  "allowGatewayTransit": "false",
+                  "useRemoteGateways": "false",
+                  "remoteVirtualNetwork": {
+                          "id": "[variables('vNet1ID')]"
+                  }
+              }
+          }
+     ]
+}

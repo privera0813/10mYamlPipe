@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "value": "keyvaultaz10"
+    },
+    "objectId": {
+      "value": "28af1936-dafb-4174-9677-560a87aeec76"
+    },
+    "secretName": {
+      "value": "vaultaz10"
+    },
+    "secretValue": {
+      "value": "Fg+~)'j'jkZ[+<mPX8N3n/lZu=BWY/"
+    }
+  }
+}

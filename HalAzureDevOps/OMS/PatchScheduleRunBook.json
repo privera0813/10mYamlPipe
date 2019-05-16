@@ -1,0 +1,43 @@
+{ 
+"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json", 
+"contentVersion": "1.0.0.0", 
+"parameters": { 
+"aaName": { 
+    "type": "string",
+    "defaultValue": "INT-HAL-IT-DEV-AA01",
+     "metadata": {
+     "description": "OMS log analytics workspace name"
+     }
+}, 
+"scheduleName1": { 
+"type": "string",
+"defaultValue": "Workload Patch Deployment",
+"metadata": {
+"description": "Patch Deployment"
+  }
+ }
+}, 
+"variables": {}, 
+"resources": [ 
+{ 
+"comments": "", 
+"type": "Microsoft.Automation/automationAccounts/schedules", 
+"name": "[concat(parameters('aaName'),'/',parameters('scheduleName1'))]", 
+"apiVersion": "2015-10-31", 
+"location": "[resourceGroup().location]", 
+"dependsOn": [], 
+"properties": { 
+"description": "VM Patch Automation Schedule", 
+"startTime": "2019-05-03T02:00:00-04:00",
+"expiryTime": "9999-12-31T18:59:00-05:00",
+"isEnabled": true, 
+"interval": 1, 
+"frequency": "Week", 
+"timeZone": "America/New_York" 
+} 
+}
+], 
+"outputs": {
+
+} 
+}

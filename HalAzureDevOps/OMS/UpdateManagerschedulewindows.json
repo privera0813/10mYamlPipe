@@ -1,0 +1,168 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "omsWorkspaceName": {
+            "type": "string",
+            "defaultValue": "INT-HAL-IT-DEV-LA011",
+            "metadata": {
+                "description": "OMS log analytics workspace name"
+            }
+        },
+        "omsServiceTier": {
+            "type": "string",
+            "defaultValue": "PerGB2018",
+            "allowedValues": [
+                "pay-as-you-go",
+                "PerGB2018",
+                "Per-GB",
+                "Free",
+                "Standalone",
+                "PerNode"
+            ],
+            "metadata": {
+                "description": "OMS log analytics service tier: Free, Standalone, or PerNode"
+            }
+        },
+        "autoSkuSize":{
+        "type": "string",
+        "defaultValue": "Basic",
+        "metadata": {
+            "description": "Sku Size for Automaton Account"
+            }
+        },
+        "omsDataRetention": {
+            "type": "int",
+            "defaultValue": 7,
+            "minValue": 7,
+            "maxValue": 730,
+            "metadata": {
+                "description": "OMS log analytics number of days of retention. Free plans can only have 7 days, Standalone and OMS plans include 30 days for free"
+            }
+        }, 
+        "deployName": { 
+        "type": "string",
+        "defaultValue": "PatchAZ01"
+        }, 
+        "scheduleName1": { 
+        "type": "string",
+        "defaultValue": "PatchDeploy1"
+
+        },
+        "automationAccountName": {
+            "defaultValue": "INT-HAL-IT-DEV-AA01",
+            "type": "string",
+            "metadata": {
+                "description": "Automation account name"
+            }
+        }
+    },
+    "variables": {
+        "omsWorkspaceName":"[parameters('omsWorkspaceName')]",
+        "omsServiceTier":"[parameters('omsServiceTier')]",
+        "omsDataRetention":"[parameters('omsDataRetention')]",
+        "automationAccountName":"[parameters('automationAccountName')]",
+        "autoSkuSize": "[parameters('omsDataRetention')]",
+        "updates": {
+            "name": "[concat('Updates', '(', parameters('omsWorkspaceName'), ')')]",
+            "galleryName": "Updates"
+        }
+    },
+    "resources": [
+       {
+      "apiVersion": "2017-03-15-preview",
+      "location": "eastus",
+      "name": "[variables('omsWorkspaceName')]",
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "comments": "Log Analytics workspace",
+      "properties": {
+        "sku": {
+          "name": "[variables('omsServiceTier')]"
+        }
+            },
+            "resources": [
+                 {
+                    "apiVersion": "2015-11-01-preview",
+                    "location": "eastus",
+                    "name": "[variables('updates').name]",
+                    "type": "Microsoft.OperationsManagement/solutions",
+                    "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.OperationsManagement/solutions/', variables('updates').name)]",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+                    ],
+                    "properties": {
+                        "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+                        
+                    },
+                    "plan": {
+                        "name": "[variables('updates').name]",
+                        "publisher": "Microsoft",
+                        "promotionCode": "",
+                        "product": "[concat('OMSGallery/', variables('updates').galleryName)]"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "2015-10-31",
+            "type": "Microsoft.Automation/automationAccounts",
+            "name": "[variables('automationAccountName')]",
+            "location": "eastus2",
+            "properties": {
+                "sku": {
+                    "name": "[variables('autoSkuSize')]"
+
+            }
+          }
+        },
+        {
+            "apiVersion": "2017-05-15-preview",
+            "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
+            "name": "[concat(parameters('automationAccountName'),'/',parameters('scheduleName1'))]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "updateConfiguration": {
+                    "operatingSystem": "Windows",
+                    "duration": "PT2H0M",
+                    "windows": {
+                        "excludedKbNumbers": [
+                            "168934",
+                            "168973"
+                        ],
+                        "includedUpdateClassifications": "Critical",
+                        "rebootSetting": "IfRequired"
+                    },
+                    "azureVirtualMachines": [
+                        "/subscriptions/270086d6-d0b4-4c74-87dc-44ad8c9b6fed/resourceGroups/WLNET-RG/providers/Microsoft.Compute/virtualMachines/azusscwl02"
+                    ]
+                },
+                "scheduleInfo": {
+                    "frequency": "Hour",
+                    "startTime": "2019-10-19T12:22:57+00:00",
+                    "timeZone": "America/Los_Angeles",
+                    "interval": 1,
+                    "expiryTime": "2020-11-09T11:22:57+00:00",
+                    "advancedSchedule": {
+                        "weekDays": [
+                            "Monday",
+                            "Thursday"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2015-11-01-preview",
+            "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
+            "name": "[concat(variables('omsWorkspaceName'), '/' , 'Automation')]",
+            "location": "eastus2",
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]",
+                "[concat('Microsoft.Automation/automationAccounts/', variables('automationAccountName'))]"
+            ],
+            "properties": {
+                "resourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Automation/automationAccounts/', variables('automationAccountName'))]"
+            }
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceId": {
+        "value": "d15af9d9-732d-4c24-aca3-a0c90776661f"
+    },
+    "workspaceKey": {
+      "value": "Gnn0uOCow2K2yU1yRy0mNtNMgaCKcvxAHIk2ToSRQ2TZ//nl51rm+vIt17UKtUpxtucpbaUcN6nSap9XdgXq/w=="
+    }
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionCode": {
+      "type": "string",
+      "defaultValue": "INT",
+      "metadata": {
+        "description": "HAL IT Function Code - Example: INT or EXT"
+      }
+   },
+    "environmentCode": {
+      "type": "string",
+      "defaultValue": "DEV",
+      "metadata": {
+        "description": "HAL IT Environment Code - Example: DEV, PRD"
+      }
+   },
+    "productLineCode": {
+      "type": "string",
+      "defaultValue": "IT",
+      "metadata": {
+        "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+      }
+   },
+    "customerCode": {
+      "type": "string",
+      "defaultValue": "HAL",
+      "metadata": {
+        "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+      }
+    },
+    "typeCode": {
+      "type": "string",
+      "defaultValue": "SV",
+      "metadata": {
+        "description": "HAL IT Type - Example: WL or SV"
+      }
+   },
+  "locationCode": {
+    "type": "string",
+    "defaultValue": "southcentralus",
+    "metadata": {
+      "description": "Azure Location/Region - Example: southcentalus"
+     }
+  },
+    "regionCode": {
+      "type": "string",
+      "defaultValue": "USSC",
+      "metadata": {
+        "description": "HAL IT Region Code - Example: USSC"
+      }
+   },
+    "vmRoleCode": {
+      "type": "string",
+      "defaultValue": "APPL",
+      "metadata": {
+        "description": "HAL IT VM Code - Example: APPL, EXCH, SECR"
+      }
+  },
+    "pslTag": {
+     "type": "string",
+     "defaultValue": "NA",
+     "metadata": {
+     "description": "ResourceTag - Example: Department LMKPublicCloudTest"
+     }
+  },
+    "billingStatusTag": {
+          "type": "string",
+          "defaultValue": "NA",
+          "metadata": {
+            "description": "ResourceTag - Example: Billed"
+          }
+  },
+    "costCenterTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - 123456789"
+      }
+  },
+     "requestnumberStatusTag": {
+            "type": "string",
+            "defaultValue": "NA",
+            "metadata": {
+              "description": "ResourceTag - Example: Request Number 7184"
+         }
+  },
+    "resourcegroupName": {
+      "type": "string",
+      "defaultValue": "HAL-SVNET-RG",
+      "metadata": {
+        "description": "The resource group where the existing VNet is located."
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "defaultValue": "mgmtsubnet",
+      "metadata": {
+        "description": "The name of the first subnet"
+      }
+    },
+    "nsgName": {
+      "type": "string",
+      "defaultValue": "app-nsg"
+    },
+    "vnetName": {
+      "type": "string",
+      "defaultValue": "INT-HAL-IT-DEV-USSC-SV-VNET1",
+      "metadata": {
+        "description": "The name of the first subnet"
+      }
+    }
+  },
+  "variables": {
+    "rgName": "[parameters('resourcegroupName')]",
+    "function": "[parameters('functionCode')]",
+    "environment": "[parameters('environmentCode')]",
+    "productLine": "[parameters('productLineCode')]",
+    "customer": "[parameters('customerCode')]",
+    "type": "[parameters('typeCode')]",
+    "location": "[parameters('locationCode')]",
+    "region": "[parameters('regionCode')]",
+    "vmRole": "[parameters('vmRoleCode')]",
+    "costCenter": "[parameters('costCenterTag')]",
+    "billingStatus": "[parameters('billingStatusTag')]",
+    "requestnumber": "[parameters('requestnumberStatusTag')]",
+    "psl": "[parameters('pslTag')]",
+    "subscription": "[concat(variables('function'), '-', variables('customer'), '-', variables('productLine'), '-', variables('environment'))]",
+    "subnetName": "[parameters('subnetName')]",
+    "subnetId": "[resourceId(variables('rgName'),'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]",
+    "vnetName": "[concat(variables('subscription'), '-', variables('region'), '-', variables('type'), '-', 'VNET', '1')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('nsgName')]",
+      "location": "[variables('location')]",
+      "apiVersion": "2017-10-01",
+      "tags": {
+        "Cost Center (Network Code)": "[variables('costCenter')]",
+        "Billing Status": "[variables('billingStatus')]",
+        "Request Number":"[variables('requestnumber')]",
+        "PSL (Department)": "[variables('psl')]"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "SSH",
+            "properties": {
+              "description": "Allows SSH traffic",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+               }
+            }
+          ]
+       }
+  },
+   {
+    "apiVersion": "2017-05-10",
+    "name": "deploy",
+    "type": "Microsoft.Resources/deployments",
+    "resourceGroup": "HAL-SVNET-RG",
+    "dependsOn": [
+      "[parameters('nsgName')]"
+    ],
+    "properties": {
+      "mode": "Incremental",
+      "template": {
+        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+        "contentVersion": "1.0.0.0",
+      "resources": [
+        {
+            "apiVersion": "2018-04-01",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(variables('vnetName'), '/', parameters('subnetName'))]",
+            "location": "[variables('location')]",
+            "properties": {
+                "addressPrefix": "[reference(variables('subnetId'), '2018-04-01').addressPrefix]",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                }
+            }
+          }
+       ]
+      }
+     }
+    }
+  ],
+  "outputs": {
+     }
+}

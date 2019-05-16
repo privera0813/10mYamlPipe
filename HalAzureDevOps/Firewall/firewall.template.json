@@ -1,0 +1,405 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "functionCode": {
+        "type": "string",
+        "defaultValue": "INT",
+        "metadata": {
+          "description": "HAL IT Function Code - Example: INT or EXT"
+        }
+     },
+      "environmentCode": {
+        "type": "string",
+        "defaultValue": "DEV",
+        "metadata": {
+          "description": "HAL IT Environment Code - Example: DEV, PRD"
+        }
+     },
+     "productLineCode": {
+      "type": "string",
+      "defaultValue": "IT",
+      "metadata": {
+        "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+        }
+     },
+      "customerCode": {
+        "type": "string",
+        "defaultValue": "HAL",
+        "metadata": {
+          "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+        }
+     },
+      "typeCode": {
+        "type": "string",
+        "defaultValue": "SV",
+        "metadata": {
+          "description": "HAL IT Type - Example: WL or SV"
+        }
+    },
+      "locationCode": {
+        "type": "string",
+        "defaultValue": "southcentralus",
+        "metadata": {
+          "description": "Azure Location/Region - Example: southcentalus"
+      }
+    },
+        "vmRoleCode": {
+          "type": "string",
+          "defaultValue": "APPL",
+          "metadata": {
+            "description": "HAL IT VM Code - Example: APPL, EXCH, SECR"
+      }
+     },
+         "regionCode": {
+         "type": "string",
+         "defaultValue": "USSC",
+         "metadata": {
+         "description": "HAL IT Region Code - Example: USSC"
+      }
+    },
+    "serviceCode": {
+      "type": "string",
+      "defaultValue": "app",
+      "metadata": {
+        "description": "The type of the service. Example - app"
+      }
+     },
+      "vnetAddressPrefix": {
+        "type": "string",
+        "defaultValue": "172.16.0.0/16",
+        "metadata": {
+          "description": "virtual network address range"
+        }
+      },
+      "subnetPrefix": {
+        "type": "string",
+        "defaultValue": "172.16.0.0/24",
+        "metadata": {
+          "description": "Subnet prefix"
+        }
+      },
+      "AzureFirewallSubnetName": {
+        "type": "string",
+        "defaultValue": "AzureFirewallSubnet",
+        "metadata": {
+          "description": "Firewall Subnet Name"
+        }
+      },
+      "AzureFirewallSubnetAddressPrefix": {
+        "type": "string",
+        "defaultValue": "172.16.2.0/24",
+        "metadata": {
+          "description": "FirewallSubnet prefix"
+        }
+      },
+      "mgmtSubnetName": {
+      "type": "string",
+      "defaultValue": "mgmtsubnet",
+      "metadata": {
+        "description": "Name of the subnet to add"
+        } 
+      },
+      "mgmtSubnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.50.0/24",
+      "metadata": {
+        "description": "Address space of the mgmtsubnet to add"
+        }
+      },
+      "appgatewaysubnetName": {
+      "type": "string",
+      "defaultValue": "appgatewaysubnet",
+      "metadata": {
+        "description": "Name of the subnet to add"
+        }
+      },
+      "appgatewaySubnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.3.0/24",
+      "metadata": {
+        "description": "Address space of the subnet to add"
+        }
+      },
+      "applicationIDTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - SQLDB"
+        }
+      },
+      "applicationNameTag": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "description": "ResourceTag - Example Name: Shared Service Monitoring"
+        }
+      },
+      "applicationOwnerTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example Owner: Thomas Jefferson"
+        }
+      },
+      "businessOwnerTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example Owner: George Washington"
+        }
+      },
+      "costCenterTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - 123456789"
+        }
+      },
+      "environmentNameTag": {
+        "type": "string",
+        "defaultValue": "Development",
+        "metadata": {
+          "description": "ResourceTag - Environment Full Name - Development, Production"
+        }
+      },
+      "projectIDTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: P1234"
+        }
+      },
+      "billingStatusTag": {
+          "type": "string",
+          "defaultValue": "NA",
+          "metadata": {
+            "description": "ResourceTag - Example: Billed"
+          }
+        },
+        "privateIPAddress": {
+          "type": "string",
+          "defaultValue": "172.16.2.4",
+          "metadata": {
+            "description": "The private IP Address for the application gateway"
+          }  
+       },
+          "requestnumberStatusTag": {
+              "type": "string",
+              "defaultValue": "NA",
+              "metadata": {
+                "description": "ResourceTag - Example: Request Number 7184"
+           }
+        },
+            "pslTag": {
+               "type": "string",
+               "defaultValue": "NA",
+               "metadata": {
+               "description": "ResourceTag - Example: Department LMKPublicCloudTest"
+            }
+         }, 
+      "primaryFunctionTag": {
+        "type": "string",
+        "defaultValue": "NA",
+        "metadata": {
+          "description": "ResourceTag - Example: Transporting - non sensitive data information"
+        }
+      }
+    },
+    "variables": {
+      "function": "[parameters('functionCode')]",
+      "environment": "[parameters('environmentCode')]",
+      "productLine": "[parameters('productLineCode')]",
+      "customer": "[parameters('customerCode')]",
+      "type": "[parameters('typeCode')]",
+      "location": "[parameters('locationCode')]",
+      "region": "[parameters('regionCode')]",
+      "vmRole": "[parameters('vmRoleCode')]",
+      "subscription": "[concat(variables('function'), '-', variables('customer'), '-', variables('productLine'), '-', variables('environment'))]",
+      "vnetAddressPrefix": "[parameters('vnetAddressPrefix')]",
+      "subnetPrefix": "[parameters('subnetPrefix')]",
+      "applicationID":  "[parameters('applicationIDTag')]",
+      "applicationName":  "[parameters('applicationNameTag')]",
+      "applicationOwner":  "[parameters('applicationOwnerTag')]",
+      "businessOwner":  "[parameters('businessOwnerTag')]",
+      "costCenter": "[parameters('costCenterTag')]",
+      "environmentName":"[parameters('EnvironmentNameTag')]",
+      "projectID": "[parameters('projectIDTag')]",
+      "billingStatus": "[parameters('billingStatusTag')]",
+      "requestnumberStatus": "[parameters('requestnumberStatusTag')]",
+      "psl": "[parameters('pslTag')]",
+      "primaryFunction": "[parameters('PrimaryFunctionTag')]",
+      "privateIPAddress": "[parameters('privateIPAddress')]",
+      "service": "[parameters('serviceCode')]",
+      "publicIPName": "[concat(variables('service'), '-', 'IP')]",
+      "AzureFirewallName": "[concat(variables('service'), '-', 'FW')]",
+      "appgatewaysubnetName" : "[parameters('appgatewaysubnetName')]",
+      "appgatewaySubnetAddressPrefix": "[parameters('appgatewaySubnetAddressPrefix')]",
+      "mgmtSubnet": "[parameters('mgmtSubnetName')]",
+      "mgmtSubnetAddressPrefix": "[parameters('mgmtSubnetAddressPrefix')]",
+      "AzureFirewallSubnetAddressPrefix": "[parameters('AzureFirewallSubnetAddressPrefix')]",
+      "AzureFirewallSubnetName": "[parameters('AzureFirewallSubnetName')]",
+      "AzureFirewallSubnetId":  "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnetName'), variables('AzureFirewallSubnetName'))]",
+      "AzureFirewallPublicIpId": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPName'))]",
+      "vnetName": "[concat(variables('subscription'), '-', variables('region'), '-', variables('type'), '-', 'VNET', '1')]"
+    },
+      "resources": [
+      {
+        "name": "[variables('vnetName')]",
+        "apiVersion": "2017-06-01",
+        "type": "Microsoft.Network/virtualNetworks",
+        "location": "[variables('location')]",
+        "tags": {
+          "Cost Center (Network Code)": "[parameters('costCenterTag')]",
+          "Billing Status": "[parameters('billingStatusTag')]",
+          "Request Number": "[parameters('requestnumberStatusTag')]",
+          "PSL (Department)": "[parameters('pslTag')]"
+        },
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[parameters('vnetAddressPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('AzureFirewallSubnetName')]",
+              "properties": {
+                "addressPrefix": "[variables('AzureFirewallSubnetAddressPrefix')]"
+              }
+            },
+            {
+              "name": "[variables('mgmtSubnet')]",
+              "properties": {
+                "addressPrefix": "[variables('mgmtSubnetAddressPrefix')]"
+              }
+            },
+            {
+              "name": "[variables('appgatewaysubnetName')]",
+              "properties": {
+                "addressPrefix": "[variables('appgatewaySubnetAddressPrefix')]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "[variables('publicIPName')]",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "apiVersion": "2017-10-01",
+        "location": "[variables('location')]",
+        "sku": {
+          "name": "Standard"
+        },
+        "tags": {
+          "Cost Center (Network Code)": "[parameters('costCenterTag')]",
+          "Billing Status": "[parameters('billingStatusTag')]",
+          "Request Number": "[parameters('requestnumberStatusTag')]",
+          "PSL (Department)": "[parameters('pslTag')]"
+        },
+          "properties": {
+          "publicIPAllocationMethod": "Static",
+          "publicIPAddressVersion": "IPv4"
+        }
+      },
+      {
+        "apiVersion": "2018-06-01",
+        "type": "Microsoft.Network/azureFirewalls",
+        "name": "[variables('AzureFirewallName')]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
+          "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPName'))]"
+        ],
+        "tags": {
+          "Cost Center (Network Code)": "[parameters('costCenterTag')]",
+          "Billing Status": "[parameters('billingStatusTag')]",
+          "Request Number": "[parameters('requestnumberStatusTag')]",
+          "PSL (Department)": "[parameters('pslTag')]"
+        },
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "IpConf",
+              "properties" : {
+                "privateIPAddress": "[variables('privateIPAddress')]",
+                "privateIPAllocationMethod": "Static",
+                "subnet": {
+                  "id": "[variables('AzureFirewallSubnetId')]"
+                },
+                "InternalPublicIPAddress": {
+                  "id": "[variables('AzureFirewallPublicIpId')]"
+                }
+              }
+            }
+          ],
+          "applicationRuleCollections": [
+            {
+              "name": "OutboundRC1",
+              "properties": {
+                "priority": 101,
+                "action": {"type": "Allow"},
+                "rules": [
+                  {
+                    "name": "OutboundRule1",
+                    "protocols": [{"port": "80", "protocolType": "http"}],
+                    "targetUrls": ["www.halliburton.com"],
+                    "sourceAddresses": ["172.17.0.0/24"]
+                  },
+                  {
+                     "name": "OutboundRule2",
+                     "protocols":[{"port": "443", "protocolType": "https"}],
+                     "targetUrls": ["www.halliburton.com"],
+                     "sourceAddresses": ["172.17.0.0/24"]
+                  },
+                  {
+                     "name": "OutboundRule3",
+                     "protocols":[{"port": "80", "protocolType": "http"}],
+                     "targetUrls": ["www.google.com"],
+                     "sourceAddresses": ["172.17.0.0/24"]
+                  },
+                   {
+                     "name": "OutboundRule4",
+                     "protocols":[{"port": "443", "protocolType": "https"}],
+                     "targetUrls": ["www.google.com"],
+                     "sourceAddresses": ["172.17.0.0/24"]
+                  },
+                  {
+                    "name": "OutboundRule5",
+                    "protocols":[{"port": "80", "protocolType": "http"}],
+                    "targetUrls": ["www.microsoft.com"],
+                    "sourceAddresses": ["172.17.0.0/24"]
+                  },
+                    {
+                    "name": "OutboundRule6",
+                    "protocols":[{"port": "443", "protocolType": "https"}],
+                    "targetUrls": ["www.microsoft.com"],
+                    "sourceAddresses": ["172.17.0.0/24"]
+                  }
+                ]
+              }
+            }
+          ],
+          "networkRuleCollections": [
+            {
+              "name": "netRc1",
+              "properties": {                    
+                "priority": 200,
+                "action":  { "type":  "Allow"},
+                "rules": [
+                  {
+                    "name": "netRule1",
+                    "protocols": ["TCP"],
+                    "sourceAddresses": ["172.17.0.0/24"],
+                    "destinationAddresses": ["*"],
+                    "destinationPorts": ["8000-8999"]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+  

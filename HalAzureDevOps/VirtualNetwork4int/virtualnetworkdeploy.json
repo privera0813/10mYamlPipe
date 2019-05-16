@@ -1,0 +1,238 @@
+
+ {
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionCode": {
+      "type": "string",
+      "defaultValue": "INT",
+      "metadata": {
+        "description": "HAL IT Function Code - Example: INT or EXT"
+      }
+    },
+    "environmentCode": {
+      "type": "string",
+      "defaultValue": "DEV",
+      "metadata": {
+        "description": "HAL IT Environment Code - Example: DEV, PRD"
+      }
+    },
+    "productLineCode": {
+      "type": "string",
+      "defaultValue": "IT",
+      "metadata": {
+        "description": "HAL IT Prodcut Line Code - Example: IT, LM"
+      }
+    },
+    "customerCode": {
+      "type": "string",
+      "defaultValue": "HAL",
+      "metadata": {
+        "description": "HAL Customer Name Code - Example: HAL, APC, APA"
+      }
+    },
+    "typeCode": {
+      "type": "string",
+      "defaultValue": "SV",
+      "metadata": {
+        "description": "HAL IT Type - Example: WL or SV"
+      }
+    },
+    "locationCode": {
+      "type": "string",
+      "defaultValue": "southcentralus",
+      "metadata": {
+        "description": "Azure Location/Region - Example: southcentalus"
+      }
+    },
+    "regionCode": {
+      "type": "string",
+      "defaultValue": "USSC",
+      "metadata": {
+        "description": "HAL IT Region Code - Example: USSC"
+      }
+    },
+    "vmRoleCode": {
+      "type": "string",
+      "defaultValue": "APPL",
+      "metadata": {
+        "description": "HAL IT VM Code - Example: APPL, EXCH, SECR"
+      }
+    },
+    "addressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.0.0/22",
+      "metadata": {
+        "description": "The address prefix of the virtual network"
+      }
+    },
+
+
+    "subnetName": {
+      "type": "string",
+      "defaultValue": "AzureFirewa;;",
+      "metadata": {
+        "description": "AzureFirewall"
+      }
+    },
+    "subnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.0.0/24",
+      "metadata": {
+        "description": "The address prefix of the first subnet"
+      }
+    },
+
+    "subnetNameDEX": {
+      "type": "string",
+      "defaultValue": "subnet-DEX",
+      "metadata": {
+        "description": "The name of the first subnet"
+      }
+    },
+    "subnetAddressPrefixDEX": {
+      "type": "string",
+      "defaultValue": "192.168.1.0/24",
+      "metadata": {
+        "description": "The address prefix of the first subnet"
+      }
+    },
+
+
+    "enableDdosProtection": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "True or False: Enable Premium DDOS protection"
+      }
+    },
+    "applicationIDTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - SQLDB"
+      }
+    },
+    "applicationNameTag": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "ResourceTag - Example Name: Shared Service Monitoring"
+      }
+    },
+    "applicationOwnerTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example Owner: Thomas Jefferson"
+      }
+    },
+    "businessOwnerTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example Owner: George Washington"
+      }
+    },
+    "costCenterTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - 123456789"
+      }
+    },
+    "environmentNameTag": {
+      "type": "string",
+      "defaultValue": "Development",
+      "metadata": {
+        "description": "ResourceTag - Environment Full Name - Development, Production"
+      }
+    },
+    "projectIDTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example: P1234"
+      }
+    },
+    "primaryFunctionTag": {
+      "type": "string",
+      "defaultValue": "NA",
+      "metadata": {
+        "description": "ResourceTag - Example: Transporting - non sensitive data information"
+      }
+    }
+  },
+  "variables": {
+    "function": "[parameters('functionCode')]",
+    "environment": "[parameters('environmentCode')]",
+    "productLine": "[parameters('productLineCode')]",
+    "customer": "[parameters('customerCode')]",
+    "type": "[parameters('typeCode')]",
+    "location": "[parameters('locationCode')]",
+    "region": "[parameters('regionCode')]",
+    "vmRole": "[parameters('vmRoleCode')]",
+    "subscription": "[concat(variables('function'), '-', variables('customer'), '-', variables('productLine'), '-', variables('environment'))]",
+    "addressPrefix": "[parameters('addressPrefix')]",
+
+    "subnetName": "[parameters('subnetName')]",
+    "subnetAddressPrefix": "[parameters('subnetAddressPrefix')]",
+    
+    "subnetNameDEX": "[parameters('subnetNameDEX')]",
+    "subnetAddressPrefixDEX": "[parameters('subnetAddressPrefixDEX')]",
+
+
+    "enableDdosProtection": "[parameters('enableDdosProtection')]",
+    "applicationID": "[parameters('applicationIDTag')]",
+    "applicationName": "[parameters('applicationNameTag')]",
+    "applicationOwner": "[parameters('applicationOwnerTag')]",
+    "businessOwner": "[parameters('businessOwnerTag')]",
+    "costCenter": "[parameters('costCenterTag')]",
+    "environmentName": "[parameters('EnvironmentNameTag')]",
+    "projectID": "[parameters('projectIDTag')]",
+    "primaryFunction": "[parameters('PrimaryFunctionTag')]",
+    "vnetName": "[concat(variables('subscription'), '-', variables('region'), '-', variables('type'), '-', 'VNET', '1')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-04-01",
+      "name": "[variables('vnetName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[variables('location')]",
+      "tags": {
+        "environment": "[variables('environment')]",
+        "region": "[variables('region')]",
+        "applicationID": "[variables('applicationID')]",
+        "applicationName": "[variables('applicationName')]",
+        "applicationOwner": "[variables('applicationOwner')]",
+        "businessOwner": "[variables('businessOwner')]",
+        "projectID": "[variables('projectID')]",
+        "costCenter": "[variables('costCenter')]",
+        "environmentName": "[variables('environmentName')]",
+        "primaryFunction": "[variables('primaryFunction')]"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetAddressPrefix')]"
+            }
+          },
+          {
+            "name": "[variables('subnetNameDEX')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetAddressPrefix')]"
+            }
+          }
+        ],
+        "enableDdosProtection": "[variables('enableDdosProtection')]"
+      }
+    }
+  ]
+}

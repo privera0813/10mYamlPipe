@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "existingLocalVirtualNetworkName": {
+      "value": "INT-HAL-IT-DEV-USSC-SV-VNET1"
+    },
+    "existingRemoteVirtualNetworkName": {
+      "value": "INT-HAL-IT-DEV-USSC-WL-VNET1"
+    },
+    "existingRemoteVirtualNetworkResourceGroupName": {
+      "value": "WLNET-RG"
+    }
+  }
+}
